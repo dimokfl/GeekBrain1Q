@@ -1,5 +1,7 @@
 package geekbrains.quarter1.home_work_2_5;
 
+import java.util.Arrays;
+
 public class Main {
     static final int SIZE = 10000000;
     static final int HALF = SIZE/2;
@@ -7,14 +9,14 @@ public class Main {
 //    static final int DOUBLEQUAD = SIZE/8;
 
     public static void main(String[] args) {
-        Main e1 = new Main();
+//        Main e1 = new Main();
         System.out.println("Расчет начался:");
-        e1.singleThread();
-        e1.dualThread();
+        Main.singleThread();
+        Main.dualThread();
 
     }
 
-    private void singleThread() {
+    private static void singleThread() {
         float[] arr = new float[SIZE];
         for (int i = 0; i < SIZE; i++){
             arr[i] = 1;
@@ -28,7 +30,7 @@ public class Main {
         System.out.println(("singleThread выполнялся " + (System.currentTimeMillis() - a)/1000%60) + " сек.");
     }
 
-    private void dualThread() {
+    private static void dualThread() {
 
         float[] arr = new float[SIZE];
         for (int i = 0; i < SIZE; i++){
@@ -59,7 +61,7 @@ public class Main {
         System.out.println(("dualThread выполнялся " + (System.currentTimeMillis() - a)/1000%60) + " сек.");
     }
 
-    public float[] countHalf(float[] a){
+    public static float[] countHalf(float[] a){
         for (int i = 0; i < HALF; i++) {
             a[i] = (float) (a[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
         }
