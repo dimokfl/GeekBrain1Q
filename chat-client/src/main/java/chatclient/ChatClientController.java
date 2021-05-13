@@ -13,9 +13,9 @@ import java.net.Socket;
 
 public class ChatClientController {
 
-    private  static boolean continueRead = true;
+//    private  static boolean continueRead = true;
     private final String SERVER_ADDRESS = "localhost";
-    private final int SERVER_PORT = 8189;
+    private final int SERVER_PORT = 8181;
 
     private Socket socket;
     private DataInputStream in;
@@ -49,7 +49,7 @@ public class ChatClientController {
             @Override
             public void run() {
                 try{
-                    while (continueRead){
+                    while (true){
                         System.out.println("Готовы считывать");
                         String strFromServer = in.readUTF();
                         System.out.println("Пользователь написал: " + strFromServer);
@@ -70,20 +70,25 @@ public class ChatClientController {
         EventHandler<WindowEvent> onCloseRequest = MainApp.mainStage.getOnCloseRequest();
         MainApp.mainStage.setOnCloseRequest(event -> {
             closeConnection();
-            if (onCloseRequest != null) {
-                onCloseRequest.handle(event);
-            }
+            if (onCloseRequest != null) onCloseRequest.handle(event);
         });
     }
 
+
     private  void closeConnection(){
         try {
-            continueRead = false;
-            out.writeUTF("/end");
-            socket.close();
-            out.close();
             in.close();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            out.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        try {
+            socket.close();
+        } catch (IOException e){
             e.printStackTrace();
         }
     }

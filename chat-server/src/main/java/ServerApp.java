@@ -7,9 +7,7 @@ import java.util.Scanner;
 
 public class ServerApp {
 
-    private static final int PORT = 8189;
-
-    private static Scanner scanner = new Scanner(System.in);
+    private static final int PORT = 8181;
 
     public static void main(String[] args) {
         Socket socket;
@@ -19,22 +17,32 @@ public class ServerApp {
             System.out.println("Клиент подключился");
             DataInputStream in = new DataInputStream(socket.getInputStream());
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        while (true) {
-                            String str=in.readUTF();
-                            System.out.println("Пользователь: "+str+"\n");
-                            if (str.equalsIgnoreCase("/end")) break;
-                        }
-                        String strOut=scanner.nextLine();
-                        out.writeUTF("Сервер сказал" + strOut);
-                    }catch (IOException e){
-                        e.printStackTrace();
+
+            int msgCounter = 0;
+            while (true){
+                String str = in.readUTF();
+                System.out.println(str);
+
+                if (str.startsWith("/")){
+                    if (str.equals("/stat")){
+                        out.writeUTF("Количество повторений: " + msgCounter);
+                        continue;
+                    }
+                    if (str.equals("/end")){
+                        out.writeUTF("Завершение работы приложения.");
+                        break;
                     }
                 }
-            }).start();
+                out.writeUTF("Эхо: " + str);
+                msgCounter++;
+            }
+
+//            while (true) {
+//                Scanner scanner = new Scanner(System.in);
+//                String strOut = scanner.nextLine();
+//                out.writeUTF("Сервер сказал: " + strOut);
+//            }
+
         }catch (IOException e){
             e.printStackTrace();
         }
