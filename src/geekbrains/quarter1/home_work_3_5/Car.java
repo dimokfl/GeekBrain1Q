@@ -1,6 +1,6 @@
 package geekbrains.quarter1.home_work_3_5;
 
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.CyclicBarrier;
 
 public class Car implements Runnable {
     private static int CARS_COUNT;
@@ -10,15 +10,19 @@ public class Car implements Runnable {
     private Race race;
     private int speed;
     private String name;
+    private CyclicBarrier berrier;
     public String getName() {
         return name;
     }
+
+
     public int getSpeed() {
         return speed;
     }
-    public Car(Race race, int speed) {
+    public Car(Race race, int speed, CyclicBarrier berrier) {
         this.race = race;
         this.speed = speed;
+        this.berrier = berrier;
         CARS_COUNT++;
         this.name = "Участник #" + CARS_COUNT;
     }
@@ -26,21 +30,16 @@ public class Car implements Runnable {
     public void run() {
         try {
             System.out.println(this.name + " готовится");
-            this.prepareCars();
             Thread.sleep(500 + (int)(Math.random() * 800));
             System.out.println(this.name + " готов");
+            berrier.await();
+            berrier.await();
+            for (int i = 0; i < race.getStages().size(); i++) {
+                race.getStages().get(i).go(this);
+            }
+            berrier.await();
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-        for (int i = 0; i < race.getStages().size(); i++) {
-            race.getStages().get(i).go(this);
+        e.printStackTrace();
         }
     }
-
-    private void prepareCars() throws InterruptedException {
-        Semaphore semaphore = new Semaphore(CARS_COUNT);
-        semaphore.acquire();
-
-    }
-
 }
